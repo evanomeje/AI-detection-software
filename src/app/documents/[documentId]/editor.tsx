@@ -6,6 +6,7 @@ import StarterKit from '@tiptap/starter-kit'
 export const Editor = () => {
   const editor = useEditor({
     editorProps:{
+        //paper attriubutes
         attributes: {
             style: "padding-left: 56px; padding-right: 56px;",
             class: "focus:outline-none print:border-0 bg-grey border border-[#000] border-4 flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text"
