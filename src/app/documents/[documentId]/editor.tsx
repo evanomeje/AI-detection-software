@@ -2,8 +2,9 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import TaskItem from '@tiptap/extension-task-item'
-import TaskList from '@tiptap/extension-task-list
+import TaskList from '@tiptap/extension-task-list'
 import StarterKit from '@tiptap/starter-kit'
+
 
 export const Editor = () => {
   const editor = useEditor({
@@ -11,12 +12,14 @@ export const Editor = () => {
         //paper attriubutes
         attributes: {
             style: "padding-left: 56px; padding-right: 56px;",
-            class: "focus:outline-none print:border-0 bg-grey border border-[#000] border-4 flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text"
+            class: "focus:outline-none print:border-0 bg-white border border-[#000] border-4 flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text"
         },
     },
     extensions: [
         StarterKit,
-        TaskItem,
+        TaskItem.configure({
+          nested: true,
+        }),
         TaskList,
     ],
     content: '<p>Hello World! 🌎️</p>',
