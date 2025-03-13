@@ -1,4 +1,5 @@
-import { Icon, LucideIcon } from "lucide-react";
+"use client";
+import { LucideIcon, Undo2Icon } from "lucide-react";
 import {cn} from "@/lib/utils";
 
 interface ToolbarButtonProps {
@@ -35,7 +36,7 @@ export const Toolbar = () => {
             {
                 label: "Undo",
                 icon: Undo2Icon,
-                onclick: () => console.log("Undo clicked"),
+                onClick: () => console.log("Undo clicked"),
             },
         ],
     ] ;
