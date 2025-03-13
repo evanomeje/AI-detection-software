@@ -248,8 +248,38 @@ body {
     max-width: 100%;
 
     &.ProseMirror-selectednode {
-      outline: 3px solid var(--purple);
+      outline: 3px solid var(--primary);
     }
   }
+
+  /* cannot remeber but kinda important*/ 
+  .ProseMirror-selectednode > div {
+    border: 5px dashed black; 
+  }
+  
+  /* from line 262-277 circle dot when click on image */
+  .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(5){
+    background-color: black;
+  }
+
+  .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(6){
+    background-color: black;
+  }
+
+  .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(3){
+    background-color: black;
+  }
+
+  .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(4){
+    background-color: black;
+  }
+
+  /* allingment box */
+  .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(2) {
+    border-radius: 0px !important;
+   color: black !important;
+   background-color: yellow !important;
+   border: 3px solid black !important;
+ }
 
 }
