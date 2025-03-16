@@ -10,6 +10,7 @@ import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
 import Image from '@tiptap/extension-image'
 import ImageResize from 'tiptap-extension-resize-image'
+import Underline from '@tiptap/extension-underline'
 
 import {useEditorStore} from '@/store/use-editor-store'
 
@@ -61,6 +62,7 @@ export const Editor = () => {
         TableRow,
         Image,
         ImageResize,
+        Underline,
     ],
    content: `
     <table>
@@ -70,7 +72,7 @@ export const Editor = () => {
           <th colspan="3">Description</th>
         </tr>
         <tr>
-          <td>Cyndi Lauper</td>
+          <td>Jay Kay</td>
           <td>Singer</td>
           <td>Songwriter</td>
           <td>Actress</td>
