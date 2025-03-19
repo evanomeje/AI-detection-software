@@ -26,6 +26,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { Level } from "@tiptap/extension-heading";
+
+
 interface ToolbarButtonProps {
     onClick?: () => void;
     isActive?: boolean;
@@ -39,11 +42,13 @@ const ToolbarButton = ( {
 }: ToolbarButtonProps ) => {
     return (
         <button
-            onClick= {onClick}
+            onClick={onClick}
             className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-full hover:bg- bg-neutral-200/80 border-2 border-black",
-                isActive && "bg-neutral-200/80"
-            )}>
+                "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+            )}            
+        >
             <Icon className= "size-6  "/>    
         </button>
     );
@@ -94,6 +99,71 @@ const FontFamilyButton = () => {
         </DropdownMenu>
     );
 };
+
+
+const HeadingLevelButton = () => {
+
+    const { editor } = useEditorStore();
+
+    const heading = [
+        {label: "NORMAL TEXT", value: 0, fontSize: "16px"},
+        {label: "Heading 1", value: 1, fontSize: "32px"},
+        {label: "Heading 2", value: 2, fontSize: "24px"},
+        {label: "Heading 3", value: 3, fontSize: "20px"},
+        {label: "Heading 4", value: 4, fontSize: "18px"},
+        {label: "Heading 5", value: 5, fontSize: "16px"},
+    ];
+    
+    const getCurrentHeading = () => { 
+    for ( let level =1; level <=5; level++) {
+        if (editor?.isActive("heading", {level})) {
+            return 'Heading ${level}';
+            }
+         }
+
+            return "NORMAL TEXT";
+    };
+return (
+    <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+        <button 
+                 className= "h-7 min-w-7 shrink-0 flex items-center justify-center rounded-full hover:bg-neutral-200/80 px-1.5 overflow-hidden text-sm border-2 border-black"
+                >
+                    <span className="truncate ">
+                        {getCurrentHeading()}
+                    </span>
+                    <ChevronDownIcon className="ml-2 size-4 shrink-0 rounded-full bg-black" />
+                </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className= "p-1 flex flex-col gay-y-1 ">
+            {heading.map(({ label, value, fontSize}) => (
+                <button
+                key={value}
+                style={{fontSize}}
+                onClick={() =>
+                    {
+                        if (value === 0) {
+                            editor?.chain().focus().setParagraph().run();
+                        } else {
+                            editor?.chain().focus().toggleHeading({level: value as Level}).run();
+                    } 
+                }}
+                className={cn(
+                    "flex items-center gap-x-2 px-2 py-1 rounded-sm hover-bg-neuatral-200/80 border-2 border-black bg-white",
+                    (value === 0 && !editor?.isActive("heading")) ||  editor?.isActive("heading", {label: value})  && "bg-neutral-200/80"
+                )}
+                >
+
+                  {label}  
+                </button>
+            ))}
+        </DropdownMenuContent>
+    </DropdownMenu>
+)
+    
+};
+
+
 
 export const Toolbar = () => {
 
@@ -182,12 +252,20 @@ export const Toolbar = () => {
                 <ToolbarButton key={item.label} {...item}/>
             ))}
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+
+
         {/* TODO: FONT FAMILY*/}
 
         <FontFamilyButton/> 
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
 
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        {/* TODO: HEADING*/}
+        <HeadingLevelButton/>
 
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         {/* TODO: FONT SIZE*/}
