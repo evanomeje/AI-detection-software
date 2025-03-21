@@ -12,7 +12,8 @@ import {
     MessageSquarePlusIcon,
     ListTodoIcon,
     RemoveFormattingIcon,
-    ChevronDownIcon
+    ChevronDownIcon,
+    HighlighterIcon
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -27,6 +28,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Level } from "@tiptap/extension-heading";
+import { ColorResult, CirclePicker } from "react-color";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 
 interface ToolbarButtonProps {
@@ -43,6 +47,7 @@ const ToolbarButton = ( {
     return (
         <button
             onClick={onClick}
+            //makes the popup appear when the button is clicked
             className={cn(
                 "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
                 "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
@@ -163,6 +168,111 @@ return (
     
 };
 
+const HighlightColorButton = () => {
+    const { editor } = useEditorStore();
+    const [selectedColor, setSelectedColor] = useState<string>("#FFFF00"); // Default highlight color
+
+    const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00",];
+
+    const onChange = (color: string) => {
+        setSelectedColor(color);
+        editor?.chain().focus().setHighlight({ color }).run();
+    };
+
+    const isActive = editor?.isActive("textStyle", { color: selectedColor });
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >  
+                   <HighlighterIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+                className="p-2.5 w-max border-[black] border-2 rounded-full transition-all duration-300"
+                style={{ backgroundColor: selectedColor === "#000000" ? "rgba(229, 229, 229, 1)" : selectedColor }}
+            >
+                <div className="flex flex-row items-center">   
+                    {colors.map((color, index) => (
+                        <button
+                            key={color}
+                            className="w-10 h-10 rounded-full border-4 border-black outline outline-[4px]"
+                            style={{ 
+                                backgroundColor: color, 
+                                outlineColor: color, 
+                                marginLeft: index !== 0 ? "-1.25rem" : "0"
+                            }}
+                            onClick={() => onChange(color)}
+                        />
+                    ))}
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
+
+const TextColorButton = () => {
+    const { editor } = useEditorStore();
+    const value = editor?.getAttributes("textStyle").color || "#000000"; 
+
+    const colors = [ "#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FFFFFF"];
+
+    const onChange = (color: string) => {
+        editor?.chain().focus().setColor(color).run();
+    };
+
+    const isActive = editor?.isActive("textStyle", { color: value });
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button 
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >  
+                    <span className="text-xs">colour</span>
+                    <div className="h-0.5 w-full" style={{ backgroundColor: value }} />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+                className="p-2.5 w-max border-[black] border-2 rounded-full transition-all duration-300" // Add transition class for smooth color change
+                style={{ backgroundColor: value === "#000000" ? "rgba(229, 229, 229, 1)" : value }} // Default color
+            >
+                <div className="flex flex-row items-center">   
+                    {colors.map((color, index) => (
+                        <button
+                            key={color}
+                            className={`w-10 h-10 rounded-full border-4 border-black outline outline-[4px]`}
+                            style={{ 
+                                backgroundColor: color, 
+                                outlineColor: color, 
+                                marginLeft: index !== 0 ? "-1.25rem" : "0"  // Adjust overlap
+                            }}
+                            onClick={() => onChange(color)}
+                        />
+                    ))}
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
+
+
+
+
+
+
 
 
 export const Toolbar = () => {
@@ -274,6 +384,9 @@ export const Toolbar = () => {
             <ToolbarButton key={item.label} {...item}/>
         ))}
         {/* TOD0: TEXT Color */}
+        <TextColorButton/>
+
+        <HighlightColorButton/>
 
         {/* TOD0: HIghlight Color */}
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
