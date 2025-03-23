@@ -14,7 +14,9 @@ import {
     RemoveFormattingIcon,
     ChevronDownIcon,
     HighlighterIcon,
-    Link2Icon
+    Link2Icon,
+    UploadIcon,
+    ImageIcon,
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -35,6 +37,13 @@ import { useState } from "react";
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 
 interface ToolbarButtonProps {
@@ -271,6 +280,107 @@ const TextColorButton = () => {
     );
 };
 
+
+const ImageButton = () => {
+    const { editor } = useEditorStore();
+    const [isDialogOpen, setIsDialogOpen] = useState (false);
+    const [imageUrl, setImageUrl] = useState(" ");
+
+    const  onChange = (src: string) => {
+        editor?.chain().focus().setImage({ src }).run();
+
+    };
+
+    const onUpload = () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+
+        input.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                onChange(imageUrl);
+
+            }
+        }
+
+        input.click()
+    };
+
+    const handleImageUrlSubmit = () => {
+        if (imageUrl) {
+            onChange(imageUrl);
+            setImageUrl("");
+            setIsDialogOpen(false);
+        }
+    };
+
+    const isActive = editor?.isActive("link");
+
+
+    return (
+        <>
+        <DropdownMenu>
+            
+            <DropdownMenuTrigger asChild>
+                <button
+                    
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >  
+                   <ImageIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuItem onClick= {onUpload}>
+                    <UploadIcon className="size-4 mr-2"/>
+                    Upload
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
+                    <UploadIcon className="size-4 mr-2"/>
+                    Paste Image URL
+                    </DropdownMenuItem>
+            
+                
+
+            </DropdownMenuContent>
+        </DropdownMenu> 
+
+        <Dialog open ={isDialogOpen} onOpenChange = {setIsDialogOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>
+                        Insert Image URL
+                    </DialogTitle>
+                </DialogHeader>
+                <input 
+                    placeholder= "Insert IMAGE URL"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleImageUrlSubmit();
+                        }
+                    }}
+                />
+                <DialogFooter>
+                <Button onClick={handleImageUrlSubmit}>
+
+                </Button>
+            </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        </>
+    );
+
+};
+
+
+
 const LinkButton = () => {
     const { editor } = useEditorStore();
     const [value, setValue] = useState(" ");
@@ -444,7 +554,8 @@ export const Toolbar = () => {
         {/* TOD0: HIghlight Color */}
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         <LinkButton/>
-        {/* TOD0: IMage */}
+        <ImageButton/>
+
         {/* TOD0: ALign */}
         {/* TOD0: LIST */}
         {sections[2].map((item) => (
