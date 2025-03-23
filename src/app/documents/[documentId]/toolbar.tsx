@@ -13,7 +13,8 @@ import {
     ListTodoIcon,
     RemoveFormattingIcon,
     ChevronDownIcon,
-    HighlighterIcon
+    HighlighterIcon,
+    Link2Icon
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -31,6 +32,9 @@ import { Level } from "@tiptap/extension-heading";
 import { ColorResult, CirclePicker } from "react-color";
 import { motion } from "framer-motion";
 import { useState } from "react";
+
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
 
 
 interface ToolbarButtonProps {
@@ -267,6 +271,55 @@ const TextColorButton = () => {
     );
 };
 
+const LinkButton = () => {
+    const { editor } = useEditorStore();
+    const [value, setValue] = useState(" ");
+
+    const  onChange = (href: string) => {
+        editor?.chain().focus().extendMarkRange("link").setLink({href}).run();
+        setValue("");
+
+    };
+
+    const isActive = editor?.isActive("link");
+
+
+    return (
+        <DropdownMenu onOpenChange={(open)=> {
+            if (open) {
+             setValue(editor?.getAttributes("link").href || " ")
+            }
+            }} >
+            
+            <DropdownMenuTrigger asChild>
+                <button
+                    
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >  
+                   <Link2Icon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+                className="p-0.5 flex items-center gap-x-2  w-max border-[black] border-2 transition-all duration-300">
+                <Input
+                    placeholder="http//example.com"
+                    value = {value} 
+                    onChange= {(e) => setValue(e.target.value)}
+                />
+                <Button onClick={() => onChange(value)}> 
+                    Apply 
+                    </Button>
+
+            </DropdownMenuContent>
+        </DropdownMenu> 
+    );
+
+};
+
 
 
 
@@ -357,7 +410,7 @@ export const Toolbar = () => {
     ] ;
 
     return (
-        <div className = "bg-[yellow] px-2.5 py-0.5 rounded-[60px] border-4 border-black min-h-[20px] min-w-[10px] flex items-center gap-x-0.5 overflow-x-auto shadow-2xl mt-0.5" >
+        <div className = "bg-[#f97316] px-2.5 py-0.5 rounded-[60px] border-spacing-9 border-4 border-[#1f2937] min-h-[20px] min-w-[10px] flex items-center gap-x-0.5 overflow-x-auto shadow-2xl mt-0.5" >
             {sections[0].map((item) => (
                 <ToolbarButton key={item.label} {...item}/>
             ))}
@@ -390,7 +443,7 @@ export const Toolbar = () => {
 
         {/* TOD0: HIghlight Color */}
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        {/* TOD0: link */}
+        <LinkButton/>
         {/* TOD0: IMage */}
         {/* TOD0: ALign */}
         {/* TOD0: LIST */}
