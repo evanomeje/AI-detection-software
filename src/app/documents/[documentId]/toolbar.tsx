@@ -17,6 +17,10 @@ import {
     Link2Icon,
     UploadIcon,
     ImageIcon,
+    AlignLeftIcon,
+    AlignCenterIcon,
+    AlignRightIcon,
+    AlignJustifyIcon,
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -44,6 +48,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import TextAlign from "@tiptap/extension-text-align";
 
 
 interface ToolbarButtonProps {
@@ -430,6 +435,68 @@ const LinkButton = () => {
 
 };
 
+const AlignButton = () => {
+    const { editor } = useEditorStore();
+
+    const isActive = editor?.isActive("align");
+
+    const alignments = [
+        {
+            label: "*Align Left",
+            value: "left",
+            icon: AlignLeftIcon
+        },
+        {
+            label: "*Align Center",
+            value: "center",
+            icon: AlignCenterIcon
+        },
+        {
+            label: "*Align Right",
+            value: "right",
+            icon: AlignRightIcon
+        },
+        {
+            label: "*Align Justify",
+            value: "justify",
+            icon: AlignJustifyIcon
+        },
+    ]
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >  
+                   <AlignLeftIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+                {alignments.map(({label, value, icon: Icon}) =>(
+                    <button
+                    
+                    key={value}
+                    onClick={()=> editor?.chain().focus().setTextAlign(value).run()}
+                    className={cn(
+                        "flex items-center gap-x-2 px-2 py-1 rounded-sm hover:bg-neutral-200/80",
+                        editor?.isActive({ textAlign: value}) && "bg-neutral-200/80"
+                    )}
+
+                    >
+                        <Icon className="size-4" />
+                        <span className="text-sm">{label}</span>
+                    </button>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
 
 
 
@@ -556,7 +623,7 @@ export const Toolbar = () => {
         <LinkButton/>
         <ImageButton/>
 
-        {/* TOD0: ALign */}
+        <AlignButton/>
         {/* TOD0: LIST */}
         {sections[2].map((item) => (
             <ToolbarButton key={item.label} {...item}/>
