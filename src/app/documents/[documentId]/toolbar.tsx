@@ -21,6 +21,8 @@ import {
     AlignCenterIcon,
     AlignRightIcon,
     AlignJustifyIcon,
+    ListOrderedIcon,
+    ListIcon,
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -497,6 +499,84 @@ const AlignButton = () => {
     );
 };
 
+const ListButton = () => {
+    const { editor } = useEditorStore();
+
+    // Log the editor object to check if it's correctly initialized
+    console.log("Editor:", editor);
+
+    const Lists = [
+        {
+            label: "Bullet List",
+            icon: ListIcon,
+            isActive: () => {
+                const active = editor?.isActive("BulletList");
+                console.log("Bullet List is active:", active); // Log isActive for Bullet List
+                return active;
+            },
+            onClick: () => {
+                console.log("Bullet List button clicked"); // Log button click
+                editor?.chain().focus().toggleBulletList().run();
+            },
+        },
+        {
+            label: "Ordered List",
+            icon: ListOrderedIcon,
+            isActive: () => {
+                const active = editor?.isActive("OrderedList");
+                console.log("Ordered List is active:", active); // Log isActive for Ordered List
+                return active;
+            },
+            onClick: () => {
+                console.log("Ordered List button clicked"); // Log button click
+                editor?.chain().focus().toggleOrderedList().run();
+            },
+        },
+    ];
+
+    // Determine if any list item is active
+    const isActive = Lists.some((item) => {
+        const activeState = item.isActive();
+        console.log(`Is ${item.label} active?`, activeState); // Log each item's active state
+        return activeState;
+    });
+
+    console.log("Overall active state for any list:", isActive); // Log overall active state
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <button
+                    className={cn(
+                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                    )}
+                >
+                    <ListIcon className="size-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+                {Lists.map(({ label, icon: Icon, onClick, isActive }) => (
+                    <button
+                        key={label}
+                        onClick={onClick}
+                        className={cn(
+                            "flex items-center gap-x-2 px-3 py-2 rounded-sm hover:bg-neutral-200/80",
+                            isActive() && "bg-neutral-200/80"
+                        )}
+                    >
+                        <Icon className="size-4" />
+                        <span className="text-sm">{label}</span>
+                    </button>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
+
+
 
 
 
@@ -592,17 +672,12 @@ export const Toolbar = () => {
                 <ToolbarButton key={item.label} {...item}/>
             ))}
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
+
 
 
         {/* TODO: FONT FAMILY*/}
 
         <FontFamilyButton/> 
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
-        < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
 
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         <HeadingLevelButton/>
@@ -613,18 +688,18 @@ export const Toolbar = () => {
         {sections[1].map((item) => (
             <ToolbarButton key={item.label} {...item}/>
         ))}
-        {/* TOD0: TEXT Color */}
+
         <TextColorButton/>
 
         <HighlightColorButton/>
 
-        {/* TOD0: HIghlight Color */}
+
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         <LinkButton/>
         <ImageButton/>
 
         <AlignButton/>
-        {/* TOD0: LIST */}
+        <ListButton/>
         {sections[2].map((item) => (
             <ToolbarButton key={item.label} {...item}/>
         ))}
