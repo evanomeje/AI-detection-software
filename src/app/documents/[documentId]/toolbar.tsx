@@ -499,6 +499,7 @@ const AlignButton = () => {
     );
 };
 
+/*not working fix later*/
 const ListButton = () => {
     const { editor } = useEditorStore();
 
@@ -511,11 +512,11 @@ const ListButton = () => {
             icon: ListIcon,
             isActive: () => {
                 const active = editor?.isActive("BulletList");
-                console.log("Bullet List is active:", active); // Log isActive for Bullet List
+                console.log("Bullet List is active:", active); // Log
                 return active;
             },
             onClick: () => {
-                console.log("Bullet List button clicked"); // Log button click
+                console.log("Bullet List button clicked"); // Log
                 editor?.chain().focus().toggleBulletList().run();
             },
         },
@@ -524,11 +525,11 @@ const ListButton = () => {
             icon: ListOrderedIcon,
             isActive: () => {
                 const active = editor?.isActive("OrderedList");
-                console.log("Ordered List is active:", active); // Log isActive for Ordered List
+                console.log("Ordered List is active:", active); // Log
                 return active;
             },
             onClick: () => {
-                console.log("Ordered List button clicked"); // Log button click
+                console.log("Ordered List button clicked"); // Log
                 editor?.chain().focus().toggleOrderedList().run();
             },
         },
@@ -537,11 +538,11 @@ const ListButton = () => {
     // Determine if any list item is active
     const isActive = Lists.some((item) => {
         const activeState = item.isActive();
-        console.log(`Is ${item.label} active?`, activeState); // Log each item's active state
+        console.log(`Is ${item.label} active?`, activeState); // Log
         return activeState;
     });
 
-    console.log("Overall active state for any list:", isActive); // Log overall active state
+    console.log("Overall active state for any list:", isActive); // Log
 
     return (
         <DropdownMenu>
