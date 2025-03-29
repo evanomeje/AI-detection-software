@@ -88,42 +88,37 @@ body {
   }
 }
 
-
 .tiptap {
-   /* List styles */
-   ul, 
-   ol {
-     padding: 0 1rem;
-     margin: 1.25rem 1rem 1.25rem 0.4rem;
-   }
+  /* List styles */
+  ul, 
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+  }
 
-   ul li {
-      list-style-type: disc;
-     
-     li p {
-       margin-top: 0.25em;
-       margin-bottom: 0.25em;
-     }
-   }
+  ul {
+    list-style-type: disc;
+  }
 
-   ol li {
-    list-style-type:decimal;
+  ol {
+    list-style-type: decimal;
+  }
 
-    p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-   }
+  ul li,
+  ol li {
+    margin: 0.5em 0;
+    position: relative;
+  }
 
-   /* Task list specific styles */
+  /* Task list specific styles */
   ul[data-type="taskList"] {
     list-style: none;
-    margin-left: 0;
     padding: 0;
+    margin-left: 0;
 
     li {
-      align-items: flex-start;
       display: flex;
+      align-items: center;
 
       > label {
         flex: 0 0 auto;
@@ -134,14 +129,6 @@ body {
       > div {
         flex: 1 1 auto;
       }
-    }
-
-    input[type="checkbox"] {
-      cursor: pointer;
-    }
-
-    ul[data-type="taskList"] {
-      margin: 0;
     }
   }
 
@@ -180,7 +167,6 @@ body {
   h6 { 
     font-size: 1rem; 
   }
-
 
   /* Table-specific styling */
   table {
@@ -277,23 +263,19 @@ body {
   /* allingment box */
   .ProseMirror-selectednode > div:nth-child(1) > div:nth-child(2) {
     border-radius: 0px !important;
-   color: black !important;
-   background-color: yellow !important;
-   border: 3px solid black !important;
- }
+    color: black !important;
+    background-color: yellow !important;
+    border: 3px solid black !important;
+  }
 
- /* Link styles */
- a {
-  @apply text-blue-600;
-  cursor: pointer;
+  /* Link styles */
+  a {
+    @apply text-blue-600;
+    cursor: pointer;
 
-  &:hover {
-    @apply underline;
+    &:hover {
+      @apply underline;
+    }
   }
 }
-
-
-
-}
-
 

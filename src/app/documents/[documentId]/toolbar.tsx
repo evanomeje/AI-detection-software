@@ -23,6 +23,8 @@ import {
     AlignJustifyIcon,
     ListOrderedIcon,
     ListIcon,
+    PlusIcon,
+    MinusIcon,
         } from "lucide-react";
 import {cn} from "@/lib/utils";
 
@@ -38,7 +40,7 @@ import {
 
 import { Level } from "@tiptap/extension-heading";
 import { ColorResult, CirclePicker } from "react-color";
-import { motion } from "framer-motion";
+//import { motion } from "framer-motion";
 import { useState } from "react";
 
 import { Input } from "@/components/ui/input"
@@ -50,7 +52,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import TextAlign from "@tiptap/extension-text-align";
+//import TextAlign from "@tiptap/extension-text-align";
 
 
 interface ToolbarButtonProps {
@@ -499,82 +501,166 @@ const AlignButton = () => {
     );
 };
 
-/*not working fix later*/
+
 const ListButton = () => {
+  const { editor } = useEditorStore();
+
+  const Lists = [
+    {
+      label: "Bullet List",
+      icon: ListIcon,
+      isActive: () => {
+        const active = editor?.isActive("bulletList");
+        console.log("Bullet List is active:", active);
+        return active;
+      },
+      onClick: () => {
+        console.log("Bullet List button clicked");
+        editor?.chain().focus().toggleBulletList().run();
+      },
+    },
+    {
+      label: "Ordered List",
+      icon: ListOrderedIcon,
+      isActive: () => {
+        const active = editor?.isActive("orderedList");
+        console.log("Ordered List is active:", active);
+        return active;
+      },
+      onClick: () => {
+        console.log("Ordered List button clicked");
+        editor?.chain().focus().toggleOrderedList().run();
+      },
+    }
+  ];
+
+  const isActive = Lists.some((item) => {
+    const activeState = item.isActive();
+    console.log(`Is ${item.label} active?`, activeState);
+    return activeState;
+  });
+
+  console.log("Overall active state for any list:", isActive);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={cn(
+            "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+            "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+            isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+          )}
+        >
+          <ListIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        {Lists.map(({ label, icon: Icon, onClick, isActive }) => (
+          <button
+            key={label}
+            onClick={onClick}
+            className={cn(
+              "flex items-center gap-x-2 px-3 py-2 rounded-sm hover:bg-neutral-200/80",
+              isActive() ? "bg-neutral-200/80" : ""
+            )}
+          >
+            <Icon className="size-4" />
+            <span className="text-sm">{label}</span>
+          </button>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const FontSizeButton = () => {
+
     const { editor } = useEditorStore();
 
-    // Log the editor object to check if it's correctly initialized
-    console.log("Editor:", editor);
+    const isActive = editor?.isActive("font");  
 
-    const Lists = [
-        {
-            label: "Bullet List",
-            icon: ListIcon,
-            isActive: () => {
-                const active = editor?.isActive("BulletList");
-                console.log("Bullet List is active:", active); // Log
-                return active;
-            },
-            onClick: () => {
-                console.log("Bullet List button clicked"); // Log
-                editor?.chain().focus().toggleBulletList().run();
-            },
-        },
-        {
-            label: "Ordered List",
-            icon: ListOrderedIcon,
-            isActive: () => {
-                const active = editor?.isActive("OrderedList");
-                console.log("Ordered List is active:", active); // Log
-                return active;
-            },
-            onClick: () => {
-                console.log("Ordered List button clicked"); // Log
-                editor?.chain().focus().toggleOrderedList().run();
-            },
-        },
-    ];
+    const currentFontSize = editor?.getAttributes("textStyle").fontSize
+    ? editor?.getAttributes("textStyle").fontSize.replace("px","")
+    : "16";
 
-    // Determine if any list item is active
-    const isActive = Lists.some((item) => {
-        const activeState = item.isActive();
-        console.log(`Is ${item.label} active?`, activeState); // Log
-        return activeState;
-    });
+    const [fontSize, setFontSize] = useState(currentFontSize);
+    const [inputValue, setInputValue] = useState(fontSize);
+    const [isEditing, setIsEditing] = useState(false);
 
-    console.log("Overall active state for any list:", isActive); // Log
+    const updateFontSize = (newSize: string) => {
+        const size = parseInt(newSize);
+        if (! isNaN(size) && size  > 0 ) {
+            editor?.chain().focus().setFontSize('${size}px').run();
+            setFontSize(newSize);
+            setInputValue(newSize);
+            setIsEditing(false);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+
+    };
+
+    const handleInputBlur = () => {
+        updateFontSize(inputValue);
+
+    }
+
+    const handleKeyDown = () => {
+        if (e.key === "Enter") {
+            
+            e.preventDefault();
+            updateFontSize(inputValue);
+            editor?.commands.focus();
+        }
+    }
+
+    const increment = () => {
+        const newSize = parseInt(fontSize) + 1;
+        updateFontSize(newSize.toString());
+    }
+
+    const    decrement= () => {
+        const newSize = parseInt(fontSize) - 1;
+
+        if (newSize > 0 ) {
+            updateFontSize(newSize.toString());
+        }
+    }
+
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button
-                    className={cn(
-                        "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
-                        "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
-                        isActive ? "bg-neutral-300" : "bg-neutral-200/80"
-                    )}
-                >
-                    <ListIcon className="size-4" />
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
-                {Lists.map(({ label, icon: Icon, onClick, isActive }) => (
-                    <button
-                        key={label}
-                        onClick={onClick}
-                        className={cn(
-                            "flex items-center gap-x-2 px-3 py-2 rounded-sm hover:bg-neutral-200/80",
-                            isActive() && "bg-neutral-200/80"
-                        )}
-                    >
-                        <Icon className="size-4" />
-                        <span className="text-sm">{label}</span>
-                    </button>
-                ))}
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-};
+        <div className = "flex items-center gap-x-0.5">
+        <button 
+        onClick={decrement}
+         className={cn(
+            "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+            "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+            isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+        )}
+        >
+            <MinusIcon className= "size-4" />
+        </button> 
+        {isEditing ? (
+            <input />
+
+        )  :  (  <button    
+           className={cn(
+                "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+            )}
+        >
+
+             <button/> 
+         )}
+        </div>
+    )
+
+
+}
 
 
 
@@ -685,6 +771,7 @@ export const Toolbar = () => {
 
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         {/* TODO: FONT SIZE*/}
+        <FontSizeButton />
         < Separator orientation="vertical" className="h-11 w-[3px] bg-black" />
         {sections[1].map((item) => (
             <ToolbarButton key={item.label} {...item}/>
