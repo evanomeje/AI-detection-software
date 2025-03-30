@@ -590,8 +590,8 @@ const FontSizeButton = () => {
 
     const updateFontSize = (newSize: string) => {
         const size = parseInt(newSize);
-        if (! isNaN(size) && size  > 0 ) {
-            editor?.chain().focus().setFontSize('${size}px').run();
+        if (!isNaN(size) && size > 0) {
+            editor?.chain().focus().setFontSize(`${size}px`).run();
             setFontSize(newSize);
             setInputValue(newSize);
             setIsEditing(false);
@@ -608,14 +608,13 @@ const FontSizeButton = () => {
 
     }
 
-    const handleKeyDown = () => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            
             e.preventDefault();
             updateFontSize(inputValue);
             editor?.commands.focus();
         }
-    }
+    };
 
     const increment = () => {
         const newSize = parseInt(fontSize) + 1;
@@ -632,33 +631,54 @@ const FontSizeButton = () => {
 
 
     return (
-        <div className = "flex items-center gap-x-0.5">
-        <button 
-        onClick={decrement}
-         className={cn(
-            "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
-            "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
-            isActive ? "bg-neutral-300" : "bg-neutral-200/80"
-        )}
-        >
-            <MinusIcon className= "size-4" />
-        </button> 
-        {isEditing ? (
-            <input />
-
-        )  :  (  <button    
-           className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
-                "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
-                isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+        <div className="flex items-center gap-x-0.5">
+            {/* Decrement Button */}
+            <button
+                onClick={decrement}
+                className={cn(
+                    "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                    "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                    isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                )}
+            >
+                <MinusIcon className="size-4" />
+            </button>
+    
+            {/* Input or Editable Button */}
+            {isEditing ? (
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
+                    onKeyDown={handleKeyDown}
+                    className="h-7 w-10 text-sm text-center border border-neutral-400 rounded-sm bg-transparent focus:outline-none focus:ring-0"
+                />
+            ) : (
+                <button
+                    onClick={() => {
+                        setIsEditing(true);
+                        setFontSize(currentFontSize);
+                    }}
+                    className="h-7 w-10 text-sm text-center border border-black rounded-sm border-2 hover:bg-neutral-200/80"
+                >
+                    {currentFontSize}
+                </button>
             )}
-        >
-
-             <button/> 
-         )}
+    
+            {/* Increment Button */}
+            <button
+                onClick={increment}
+                className={cn(
+                    "w-9 h-9 flex items-center justify-center rounded-full border-2 border-black transition-all relative",
+                    "hover:-translate-y-1 hover:shadow-[0_6px_0_rgba(0,0,0,1)] active:translate-y-0 active:shadow-[0_2px_0_rgba(0,0,0,1)]",
+                    isActive ? "bg-neutral-300" : "bg-neutral-200/80"
+                )}
+            >
+                <PlusIcon className="size-4" />
+            </button>
         </div>
-    )
-
+    );
 
 }
 
