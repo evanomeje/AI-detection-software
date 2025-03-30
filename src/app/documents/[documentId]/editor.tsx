@@ -21,6 +21,7 @@ import { fontSizeExtension } from '@/extensions/font-size';
 import ListItem from "@tiptap/extension-list-item";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
+import { LineHeightExtension } from '@/extensions/line-height';
 
 
 
@@ -94,6 +95,7 @@ export const Editor = () => {
         OrderedList,
         ListItem,
         fontSizeExtension,
+        LineHeightExtension,
 
     ],
    content: `
