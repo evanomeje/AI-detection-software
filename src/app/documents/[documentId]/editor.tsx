@@ -103,28 +103,7 @@ export const Editor = () => {
 
     ],
    content: `
-  <ul>
-    <li>First bullet point</li>
-    <li>Second bullet point</li>
-  </ul>
-  <ol>
-    <li>First numbered item</li>
-    <li>Second numbered item</li>
-  </ol>
-  <table>
-    <tbody>
-      <tr>
-        <th>Name</th>
-        <th colspan="3">Description</th>
-      </tr>
-      <tr>
-        <td>Jay Kay</td>
-        <td>Singer</td>
-        <td>Songwriter</td>
-        <td>Actress</td>
-      </tr>
-    </tbody>
-  </table>
+
 `,
   })
 
